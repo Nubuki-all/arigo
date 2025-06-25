@@ -71,6 +71,7 @@ type Options struct {
 	HTTPSProxyUser                string  `json:"https-proxy-user,omitempty"`
 	IndexOut                      uint    `json:"index-out,omitempty,string"`
 	LowestSpeedLimit              string  `json:"lowest-speed-limit,omitempty"`
+	MaxConcurrentDownloads        uint    `json:"max-concurrent-downloads,omitempty,string"`
 	MaxConnectionPerServer        uint    `json:"max-connection-per-server,omitempty,string"`
 	MaxDownloadLimit              string  `json:"max-download-limit,omitempty"`
 	MaxFileNotFound               uint    `json:"max-file-not-found,omitempty,string"`
