@@ -9,8 +9,9 @@ import (
 	"os"
 
 	"github.com/cenkalti/rpc2"
-	"github.com/cenkalti/rpc2/jsonrpc"
+	//"github.com/cenkalti/rpc2/jsonrpc"
 	"github.com/gorilla/websocket"
+	"github.com/siku2/arigo/internal/pkg/jsonrpc"
 	"github.com/siku2/arigo/internal/pkg/wsrpc"
 	"github.com/siku2/arigo/pkg/aria2proto"
 )
