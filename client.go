@@ -208,9 +208,9 @@ func (c *Client) GetDownloads(gids ...string) []Status {
 	} else {
 		s, _ := c.TellActive()
 		statuses = append(statuses, s...)
-		s, _ = c.TellActive()
+		s, _ = c.TellWaiting(0, 0)
 		statuses = append(statuses, s...)
-		s, _ = c.TellStopped()
+		s, _ = c.TellStopped(0, 0)
 		statuses = append(statuses, s...)
 	}
 	return statuses
@@ -231,7 +231,7 @@ func (c *Client) DeleteDownloads(statuses []Status) (err error) {
 	}
 }
 
-func RemoveFiles(files []Files) {
+func RemoveFiles(files []File) {
 	for _, file := range files {
 		_ = os.Remove(file.Path)
 	}
