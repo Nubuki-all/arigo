@@ -196,6 +196,47 @@ func (c *Client) DownloadWithContext(ctx context.Context, uris []string, options
 	return
 }
 
+// GetDownloads retrieves a list of statuses for the given gids
+// if no gid is given, return all the downloads.
+func (c *Client) GetDownloads(gids ...string) []status {
+	var statuses []status
+	if len(gids) != 0 {
+		for _, gid := range gids {
+			s, _ := c.TellStatus(gid)
+			status = append(status, s)
+		}
+	} else {
+		s, _ := c.TellActive()
+		status = append(status, s)
+		s, _ = c.TellActive()
+		status = append(status, s)
+		s, _ = c.TellStopped()
+		status = append(status, s)
+	}
+	return statuses
+}
+
+// Delete removes the downloads denoted by status and deletes all corresponding files.
+// This is not an aria2 method.
+func (c *Client) DeleteDownloads(statuses []status) (err error) {
+	for _, status := range statuses {
+		switch status.Staus{
+			case StatusCompleted, StatusRemoved, StatusError:
+				_ = c.RemoveDownloadResult(status.GID)
+			default:
+				_ = c.Remove(status.GID)
+				_ = c.RemoveDownloadResult(status.GID)
+		RemoveFiles(status.Files)
+		}
+	}
+}
+
+func RemoveFiles(files []Files) {
+	for _, file := range files {
+		_ = os.Remove(file.Path)
+	}
+}
+
 // Delete removes the download denoted by gid and deletes all corresponding files.
 // This is not an aria2 method.
 func (c *Client) Delete(gid string) (err error) {
