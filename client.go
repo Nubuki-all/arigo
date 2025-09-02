@@ -219,24 +219,27 @@ func (c *Client) GetDownloads(gids ...string) []Status {
 
 // Delete removes the downloads denoted by status and deletes all corresponding files.
 // This is not an aria2 method.
-func (c *Client) DeleteDownloads(statuses []Status) (err error) {
+func (c *Client) DeleteDownloads(statuses []Status, force, files, clean bool) (err error) {
 	for _, status := range statuses {
 		switch status.Status{
 			case StatusCompleted, StatusRemoved, StatusError:
 				_ = c.RemoveDownloadResult(status.GID)
 			default:
-				_ = c.Remove(status.GID)
+				if force {
+					_ = c.ForceRemove(status.GID)
+				} else {
+					_ = c.Remove(status.GID)
+				}
 				_ = c.RemoveDownloadResult(status.GID)
-		RemoveFiles(status.Files)
+		}
+		if files {
+			RemoveFiles(status.Files)
+		}
+		if clean {
+			DeleteControlFile(status)
 		}
 	}
 	return
-}
-
-func RemoveFiles(files []File) {
-	for _, file := range files {
-		_ = os.Remove(file.Path)
-	}
 }
 
 // Delete removes the download denoted by gid and deletes all corresponding files.
