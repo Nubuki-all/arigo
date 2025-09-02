@@ -557,7 +557,7 @@ func (c *Client) TellStopped(offset int, num uint, keys ...string) ([]Status, er
 	if len(keys) == 0 {
 		keys = make([]string, 0)
 	}
-	err := c.rpcClient.Call(aria2proto.Stopped, c.getArgs(offset, num, keys), &reply)
+	err := c.rpcClient.Call(aria2proto.TellStopped, c.getArgs(offset, num, keys), &reply)
 
 	return reply, err
 }
