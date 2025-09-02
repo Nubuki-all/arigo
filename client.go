@@ -220,7 +220,7 @@ func (c *Client) GetDownloads(gids ...string) []Status {
 // This is not an aria2 method.
 func (c *Client) DeleteDownloads(statuses []Status) (err error) {
 	for _, status := range statuses {
-		switch status.Staus{
+		switch status.Status{
 			case StatusCompleted, StatusRemoved, StatusError:
 				_ = c.RemoveDownloadResult(status.GID)
 			default:
@@ -229,6 +229,7 @@ func (c *Client) DeleteDownloads(statuses []Status) (err error) {
 		RemoveFiles(status.Files)
 		}
 	}
+	return
 }
 
 func RemoveFiles(files []File) {
