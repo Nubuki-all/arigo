@@ -47,8 +47,8 @@ func GetDownloadName(status Status) (string, error) {
 				}
 			}
 		}
-	return name, nil
 	}
+	return name, nil
 }
 
 func RemoveFiles(files []File) {
