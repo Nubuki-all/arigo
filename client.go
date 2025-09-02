@@ -208,9 +208,9 @@ func (c *Client) GetDownloads(gids ...string) []Status {
 	} else {
 		s, _ := c.TellActive()
 		statuses = append(statuses, s...)
-		s, _ = c.TellWaiting(0, 0)
+		s, _ = c.TellWaiting(0, 100)
 		statuses = append(statuses, s...)
-		s, _ = c.TellStopped(0, 0)
+		s, _ = c.TellStopped(0, 100)
 		statuses = append(statuses, s...)
 	}
 	return statuses
@@ -513,6 +513,10 @@ func (c *Client) GetServers(gid string) ([]FileServers, error) {
 // keys does the same as in the TellStatus() method.
 func (c *Client) TellActive(keys ...string) ([]Status, error) {
 	var reply []Status
+
+	if len(keys) == 0 {
+		keys = make([]string, 0)
+	}
 	err := c.rpcClient.Call(aria2proto.TellActive, c.getArgs(keys), &reply)
 
 	return reply, err
@@ -530,6 +534,9 @@ func (c *Client) TellActive(keys ...string) ([]Status, error) {
 // If specified, the returned Statuses only contain the keys passed to the method.
 func (c *Client) TellWaiting(offset int, num uint, keys ...string) ([]Status, error) {
 	var reply []Status
+	if len(keys) == 0 {
+		keys = make([]string, 0)
+	}
 	err := c.rpcClient.Call(aria2proto.TellWaiting, c.getArgs(offset, num, keys), &reply)
 
 	return reply, err
@@ -547,7 +554,10 @@ func (c *Client) TellWaiting(offset int, num uint, keys ...string) ([]Status, er
 // If specified, the returned Statuses only contain the keys passed to the method.
 func (c *Client) TellStopped(offset int, num uint, keys ...string) ([]Status, error) {
 	var reply []Status
-	err := c.rpcClient.Call(aria2proto.TellStopped, c.getArgs(offset, num, keys), &reply)
+	if len(keys) == 0 {
+		keys = make([]string, 0)
+	}
+	err := c.rpcClient.Call(aria2proto.Stopped, c.getArgs(offset, num, keys), &reply)
 
 	return reply, err
 }
