@@ -3,7 +3,7 @@ package errors
 import "fmt"
 
 type JsonRPCError struct {
-	Code    ExitStatus `json:"code,string"`         // error code
+	Code    ExitStatus `json:"code"`         // error code
 	Message string     `json:"message"`       // The human readable error message associated to Code
 
 }
