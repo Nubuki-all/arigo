@@ -1,7 +1,6 @@
 package arigo
 
 import (
-	"io/fs"
 	"os"
 	"path/filepath"
     "strings"
