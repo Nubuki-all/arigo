@@ -57,14 +57,3 @@ func RemoveFiles(files []File) {
 		_ = os.Remove(file.Path)
 	}
 }
-
-
-type Error struct {
-	Code    string `json:"code"`   // The code of the last error for this item, if any.
-	Message string     `json:"message"`       // The human readable error message associated to ErrorCode
-
-}
-
-func (e *Error) Error() string {
-	return fmt.Sprintf("code=%d, message=%s", e.Code, e.Message)
-}
