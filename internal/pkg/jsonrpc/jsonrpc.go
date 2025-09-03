@@ -140,7 +140,7 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 			if x == "" {
 				x = "unspecified error"
 			}*/
-			var x errs.jsonError
+			var x errs.JsonError
 			err := json.Unmarshal(*c.clientResponse.Error, &x)
 			if err != nil {
 				return fmt.Errorf("invalid error %v", c.clientResponse.Error)
