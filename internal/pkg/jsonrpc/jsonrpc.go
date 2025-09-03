@@ -64,8 +64,7 @@ type message struct {
 	Params *json.RawMessage `json:"params"`
 	Id     *json.RawMessage `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error *json.RawMessage `json:"error"`
-	//Error  interface{}      `json:"error"`
+	Error  interface{}      `json:"error"`
 }
 
 // Unmarshal to
@@ -77,8 +76,7 @@ type serverRequest struct {
 type clientResponse struct {
 	Id     uint64           `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error *json.RawMessage `json:"error"`
-	//Error  interface{}      `json:"error"`
+	Error  interface{}      `json:"error"`
 }
 
 // to Marshal
@@ -131,28 +129,17 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 
 		resp.Error = ""
 		resp.Seq = c.clientResponse.Id
-		if c.clientResponse.Error != nil {
-			fmt.Println(c.clientResponse.Error)
-			c.clientResponse.Result = c.clientResponse.Error
-		}
-		/*if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
-			x, ok := c.clientResponse.Error.(string)
-			if !ok {
-				xe, ok := c.clientResponse.Error.(map[string]interface{})
-				if !ok{
-					return fmt.Errorf("invalid error %v", c.clientResponse.Error)
-				}
-				var buffer bytes.Buffer
-				for key, value := range xe {
-					buffer.WriteString(fmt.Sprintf("%s: %v\n", key, value))
-				}
-				x = buffer.String()
+		if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
+			b, err := json.Marshal(c.clientResponse.Error)
+			if err != nil {
+				return fmt.Errorf("invalid error %v", c.clientResponse.Error)
 			}
+			x := string(b)
 			if x == "" {
 				x = "unspecified error"
 			}
 			resp.Error = x
-		}*/
+		}
 	}
 	return nil
 }
