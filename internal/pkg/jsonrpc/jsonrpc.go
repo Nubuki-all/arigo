@@ -143,6 +143,7 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 			var x errs.JsonRPCError
 			err := json.Unmarshal(*c.clientResponse.Error, &x)
 			if err != nil {
+				fmt.Println(err)
 				return fmt.Errorf("invalid error %v", c.clientResponse.Error)
 			}
 			resp.Err = &x
