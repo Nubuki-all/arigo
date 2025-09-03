@@ -29,16 +29,8 @@ func GetDownloadName(status Status) (string, error) {
 		if strings.HasPrefix(name, "[METADATA]") {
 			return name, nil
 		}
-		filePath, err := filepath.Abs(name)
-		if err != nil {
-			return name, err
-		}
-		dirPath, err := filepath.Abs(status.Dir)
-		if err != nil {
-			return name, err
-		}
-		if strings.HasPrefix(filePath, dirPath) {
-			name = filepath.Base(filePath)
+		if strings.HasPrefix(name, status.Dir) {
+			name = filepath.Base(name)
 		} else {
 			if uris := file.URIs; len(uris) > 0 {
 				tempStr := strings.Split(uris[0].URI, "/")
