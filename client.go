@@ -413,7 +413,12 @@ func (c *Client) AddMetalink(metalink []byte, options *Options) ([]GID, error) {
 // If the specified download is in progress, it is first stopped.
 // The status of the removed download becomes removed.
 func (c *Client) Remove(gid string) error {
-	return c.rpcClient.Call(aria2proto.Remove, c.getArgs(gid), nil)
+	var e Error
+	err := c.rpcClient.Call(aria2proto.Remove, c.getArgs(gid), &e)
+	if err != nil {
+		return err
+	}
+	return &e
 }
 
 // ForceRemove removes the download denoted by gid.
