@@ -60,7 +60,7 @@ func RemoveFiles(files []File) {
 
 
 type Error struct {
-	Code    ExitStatus `json:"code,string"`   // The code of the last error for this item, if any.
+	Code    string `json:"code"`   // The code of the last error for this item, if any.
 	Message string     `json:"message"`       // The human readable error message associated to ErrorCode
 
 }
