@@ -24,6 +24,7 @@ import (
 	"sync"
 
 	"github.com/cenkalti/rpc2"
+	errs "github.com/siku2/arigo/errors"
 )
 
 type jsonCodec struct {
@@ -92,16 +93,6 @@ type clientRequest struct {
 	Id     *uint64     `json:"id"`
 }
 
-type jsonError struct {
-	Code    int        `json:"code"`         // error code
-	Message string     `json:"message"`       // The human readable error message associated to Code
-
-}
-
-func (e *jsonError) Error() string {
-	return fmt.Sprintf("code=%d, message=%s", e.Code, e.Message)
-}
-
 func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 	c.msg = message{}
 	if err := c.dec.Decode(&c.msg); err != nil {
@@ -149,7 +140,7 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 			if x == "" {
 				x = "unspecified error"
 			}*/
-			var x jsonError
+			var x errs.jsonError
 			err := json.Unmarshal(*c.clientResponse.Error, &x)
 			if err != nil {
 				return fmt.Errorf("invalid error %v", c.clientResponse.Error)
