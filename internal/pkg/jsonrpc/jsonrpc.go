@@ -64,7 +64,8 @@ type message struct {
 	Params *json.RawMessage `json:"params"`
 	Id     *json.RawMessage `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error  interface{}      `json:"error"`
+	Error *json.RawMessage `json:"error"`
+	//Error  interface{}      `json:"error"`
 }
 
 // Unmarshal to
@@ -76,7 +77,8 @@ type serverRequest struct {
 type clientResponse struct {
 	Id     uint64           `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error  interface{}      `json:"error"`
+	Error *json.RawMessage `json:"error"`
+	//Error  interface{}      `json:"error"`
 }
 
 // to Marshal
@@ -129,7 +131,10 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 
 		resp.Error = ""
 		resp.Seq = c.clientResponse.Id
-		if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
+		if c.clientResponse.Error != nil {
+			c.clientResponse.Result = c.clientResponse.Error
+		}
+		/*if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
 			x, ok := c.clientResponse.Error.(string)
 			if !ok {
 				xe, ok := c.clientResponse.Error.(map[string]interface{})
@@ -146,7 +151,7 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 				x = "unspecified error"
 			}
 			resp.Error = x
-		}
+		}*/
 	}
 	return nil
 }
