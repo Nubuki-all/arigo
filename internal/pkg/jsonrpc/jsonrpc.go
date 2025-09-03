@@ -64,7 +64,8 @@ type message struct {
 	Params *json.RawMessage `json:"params"`
 	Id     *json.RawMessage `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error  interface{}      `json:"error"`
+	Error  *json.RawMessage `json:"error"`
+	// Error  interface{}      `json:"error"`
 }
 
 // Unmarshal to
@@ -76,7 +77,8 @@ type serverRequest struct {
 type clientResponse struct {
 	Id     uint64           `json:"id"`
 	Result *json.RawMessage `json:"result"`
-	Error  interface{}      `json:"error"`
+	Error  *json.RawMessage `json:"error"`
+	// Error  interface{}      `json:"error"`
 }
 
 // to Marshal
@@ -89,6 +91,16 @@ type clientRequest struct {
 	Method string      `json:"method"`
 	Params interface{} `json:"params"`
 	Id     *uint64     `json:"id"`
+}
+
+type jsonError struct {
+	Code    int        `json:"code"`         // error code
+	Message string     `json:"message"`       // The human readable error message associated to Code
+
+}
+
+func (e *jsonError) Error() string {
+	return fmt.Sprintf("code=%d, message=%s", e.Code, e.Message)
 }
 
 func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
@@ -130,15 +142,17 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 		resp.Error = ""
 		resp.Seq = c.clientResponse.Id
 		if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
-			b, err := json.Marshal(c.clientResponse.Error)
+			/*b, err := json.Marshal(c.clientResponse.Error)
 			if err != nil {
 				return fmt.Errorf("invalid error %v", c.clientResponse.Error)
 			}
 			x := string(b)
 			if x == "" {
 				x = "unspecified error"
-			}
-			resp.Error = x
+			}*/
+			var x jsonError
+			err := json.Unmarshal(*c.clientResponse.Error, &x)
+			resp.Err = &x
 		}
 	}
 	return nil
