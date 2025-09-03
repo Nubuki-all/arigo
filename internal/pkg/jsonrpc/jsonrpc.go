@@ -18,7 +18,7 @@ package jsonrpc
 import (
 	"encoding/json"
 	"errors"
-	//"fmt"
+	"fmt"
 	"io"
 	"reflect"
 	"sync"
