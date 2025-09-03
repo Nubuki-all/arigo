@@ -19,7 +19,7 @@ import (
 	//"bytes"
 	"encoding/json"
 	"errors"
-	//"fmt"
+	"fmt"
 	"io"
 	"reflect"
 	"sync"
@@ -132,6 +132,7 @@ func (c *jsonCodec) ReadHeader(req *rpc2.Request, resp *rpc2.Response) error {
 		resp.Error = ""
 		resp.Seq = c.clientResponse.Id
 		if c.clientResponse.Error != nil {
+			fmt.Println(c.clientResponse.Error)
 			c.clientResponse.Result = c.clientResponse.Error
 		}
 		/*if c.clientResponse.Error != nil || c.clientResponse.Result == nil {
