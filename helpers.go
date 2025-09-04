@@ -49,6 +49,14 @@ func RemoveFiles(files []File) {
 	}
 }
 
+func removeRootDir(status Status) {
+	name, _ := GetDownloadName(status)
+	if strings.HasPrefix(name, "[METADATA]") {
+		return
+	}
+	path := filepath.Join(status.Dir, name)
+	_, _ = RemoveEmptyDirs(path, true)
+}
 
 func RemoveUnselectedFiles(status Status) {
 	for _, file := range status.Files {
@@ -57,14 +65,14 @@ func RemoveUnselectedFiles(status Status) {
 		}
 	}
 	name, _ := GetDownloadName(status)
-	_, _ = RemoveEmptyDirs(filepath.Join(status.Dir, name))
+	_, _ = RemoveEmptyDirs(filepath.Join(status.Dir, name), false)
 }
 
 
 // RemoveEmptyDirs walks root recursively and removes any directories that are empty.
 // It returns the number of directories removed and the first non-nil error encountered (if any).
 // Symlinked directories are skipped (not followed).
-func RemoveEmptyDirs(root string) (int, error) {
+func RemoveEmptyDirs(root string, removeRoot bool) (int, error) {
 	var removed int
 
 	// inner recursive function that returns (isEmpty bool, err error)
@@ -103,7 +111,6 @@ func RemoveEmptyDirs(root string) (int, error) {
 			}
 		}
 
-		// After children processed, re-read entries to see if any remain.
 		entries, err = os.ReadDir(path)
 		if err != nil {
 			return false, err
@@ -115,14 +122,12 @@ func RemoveEmptyDirs(root string) (int, error) {
 	if err != nil {
 		return removed, err
 	}
-	// optionally remove the root itself if you want:
-	if isEmpty {
-		// don't remove root by default — uncomment if desired:
-		// if err := os.Remove(root); err == nil {
-		//     removed++
-		// } else {
-		//     return removed, err
-		// }
+	if isEmpty && removeRoot {
+		if err := os.Remove(root); err == nil {
+			removed++
+		} else {
+			return removed, err
+		}
 	}
 	return removed, nil
 }
